@@ -1,0 +1,28 @@
+version: '3.5'
+
+services:
+
+  postgres:
+    image: postgres:latest
+    #command: 'postgres -c config_file=/etc/postgresql/pg.config'
+    command: postgres -c checkpoint_timeout=600 -c max_wal_size=2096 -c synchronous_commit=0 -c full_page_writes=0 -c fsync=off -c check_function_bodies=false
+    hostname: postgres
+    environment:
+      - POSTGRES_DB=itaudb
+      - POSTGRES_USER=userdb
+      - POSTGRES_PASSWORD=pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./dbconfig/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks:
+      - local
+    deploy:
+      resources:
+        limits:
+          cpus: "0.3"
+          memory: "130MB"
+
+networks:
+  local:
+    driver: bridge
