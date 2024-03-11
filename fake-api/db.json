@@ -1,0 +1,28 @@
+{
+  "Contas": [
+    {
+      "id": 1,
+      "nome": "Hambúrguer",
+      "descricao": "Pão, bife de hambúrguer 90g, salada e batata.",
+      "preco": 8.5,
+      "categoria_id": 1
+    },
+    {
+      "id": 6,
+      "nome": "Coca cola 600ml",
+      "descricao": "",
+      "preco": 7.5,
+      "categoria_id": 2
+    }
+  ],
+  "categorias": [
+    {
+      "id": 1,
+      "nome": "Hambúrgueres"
+    },
+    {
+      "id": 2,
+      "nome": "Refrigerantes"
+    }
+  ]
+}
