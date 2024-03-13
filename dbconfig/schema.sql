@@ -10,9 +10,10 @@ CREATE TABLE IF NOT EXISTS CONTAS (
 
 CREATE TABLE IF NOT EXISTS TRANSACOES (
     id_transacao bigint  PRIMARY KEY not null,
-    conta_id bigint ,
+    conta_orig bigint ,
+    conta_dstn bigint ,
     cliente_id bigint,
-    tipo varchar(20),
+    tipo_trsc varchar(20),
     valor numeric(1000,2),
     status_bacen varchar(15),
     data_hora TIMESTAMP NOT NULL DEFAULT NOW()

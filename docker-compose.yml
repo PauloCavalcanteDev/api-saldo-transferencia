@@ -16,6 +16,7 @@ services:
       - ./dbconfig/schema.sql:/docker-entrypoint-initdb.d/schema.sql
     networks:
       - local
+
   json_server:
     image: clue/json-server
     restart: on-failure

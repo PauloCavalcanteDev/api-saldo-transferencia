@@ -22,6 +22,7 @@ public class Conta {
     private Long contaId;
     @Column(name = "cliente_id")
     private Long clientId;
-    private BigDecimal limite;
+    @Column(name = "limite_diario")
+    private BigDecimal limiteDiario;
     private BigDecimal saldo;
 }
