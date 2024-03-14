@@ -6,5 +6,5 @@ import java.math.BigDecimal;
 
 public interface ConsultaSaldoUseCase {
 
-    SaldoDto getSaldo(Long idCliente, BigDecimal saldo);
+    SaldoDto getSaldo(Long clientId, Long contaId);
 }
