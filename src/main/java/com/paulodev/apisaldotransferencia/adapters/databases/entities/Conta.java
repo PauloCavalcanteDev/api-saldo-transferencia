@@ -26,5 +26,5 @@ public class Conta {
     private BigDecimal limiteDiario;
     private BigDecimal saldo;
     @Column(name = "ativa")
-    private boolean contaAitva;
+    private boolean contaAtiva;
 }

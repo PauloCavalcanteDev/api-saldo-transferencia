@@ -5,12 +5,15 @@ import com.paulodev.apisaldotransferencia.adapters.databases.repository.ContaRep
 import com.paulodev.apisaldotransferencia.conveters.ContaConverter;
 import com.paulodev.apisaldotransferencia.dto.SaldoDto;
 import com.paulodev.apisaldotransferencia.ports.conta.ContaService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class ContaServiceImpl implements ContaService {
 
     private final ContaRepository repository;
@@ -28,9 +31,25 @@ public class ContaServiceImpl implements ContaService {
     }
 
     @Override
-    public SaldoDto consultaSaldo(Conta conta, String nome) {
+    public SaldoDto consultaSaldoCliente(Conta conta, String nome) {
 
         return converter.toDto(conta, nome);
+    }
+
+    @Override
+    public Conta buscaConta(Long contaId) {
+
+        return repository.findById(contaId).get();
+    }
+
+    @Override
+    public void retirarSaldo(BigDecimal valor, Long contaId) {
+        repository.trasnferir(valor, contaId);
+    }
+
+    @Override
+    public void depositar(BigDecimal valorDeposito, Long idContaDestino) {
+        repository.depositar(valorDeposito, idContaDestino);
     }
 
 

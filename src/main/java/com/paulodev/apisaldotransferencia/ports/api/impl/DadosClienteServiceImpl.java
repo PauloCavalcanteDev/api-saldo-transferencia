@@ -4,6 +4,7 @@ import com.paulodev.apisaldotransferencia.adapters.webservice.buscarCliente.Clie
 import com.paulodev.apisaldotransferencia.dto.ClienteDto;
 import com.paulodev.apisaldotransferencia.ports.api.DadosClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,6 +18,7 @@ public class DadosClienteServiceImpl implements DadosClienteService {
     }
 
     @Override
+    @Cacheable("usario")
     public ClienteDto buscaDadosCliente(Long clienteId) {
         return consultaClientes.getClientes(clienteId).getBody();
 

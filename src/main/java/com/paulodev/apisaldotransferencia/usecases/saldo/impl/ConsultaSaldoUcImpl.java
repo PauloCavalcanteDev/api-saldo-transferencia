@@ -26,7 +26,7 @@ public class ConsultaSaldoUcImpl implements ConsultaSaldoUseCase {
     @Override
     public SaldoDto getSaldo(Long clienteId, Long contaId) {
 
-        return contaService.consultaSaldo(
+        return contaService.consultaSaldoCliente(
                 contaService.consultaConta(contaId, clienteId).get(),
                 dadosClienteService.buscaDadosCliente(clienteId).nome()
         );

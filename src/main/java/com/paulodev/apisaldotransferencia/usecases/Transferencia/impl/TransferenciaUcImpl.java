@@ -1,68 +1,87 @@
 package com.paulodev.apisaldotransferencia.usecases.Transferencia.impl;
 
+import com.paulodev.apisaldotransferencia.adapters.databases.entities.Conta;
+import com.paulodev.apisaldotransferencia.adapters.validador.ValidadorConta;
 import com.paulodev.apisaldotransferencia.dto.notificaBacen.RetonoBacenDto;
+import com.paulodev.apisaldotransferencia.dto.transferencia.ResponseTransferenciaDto;
 import com.paulodev.apisaldotransferencia.dto.transferencia.SolicitaTransferenciaDto;
+import com.paulodev.apisaldotransferencia.enums.StatusEnum;
+import com.paulodev.apisaldotransferencia.exception.ContaInativaException;
+import com.paulodev.apisaldotransferencia.exception.LimiteDiarioException;
+import com.paulodev.apisaldotransferencia.ports.api.DadosClienteService;
+import com.paulodev.apisaldotransferencia.ports.conta.ContaService;
 import com.paulodev.apisaldotransferencia.usecases.Transferencia.TransferenciaUseCase;
-import com.paulodev.apisaldotransferencia.usecases.saldo.impl.ConsultaSaldoUcImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Component
 @Slf4j
 public class TransferenciaUcImpl implements TransferenciaUseCase {
-    private final ConsultaSaldoUcImpl consultaSaldoUc;
 
-    public TransferenciaUcImpl(ConsultaSaldoUcImpl consultaSaldoUc) {
-        this.consultaSaldoUc = consultaSaldoUc;
+    private final DadosClienteService clienteService;
+    private final ContaService contaService;
+    private final ValidadorConta validadorConta;
+
+    @Autowired
+    public TransferenciaUcImpl(DadosClienteService clienteService, ContaService contaService, ValidadorConta validadorConta) {
+        this.clienteService = clienteService;
+        this.contaService = contaService;
+        this.validadorConta = validadorConta;
     }
 
     @Override
-    public void realizarTransferencia(SolicitaTransferenciaDto transferenciaDto) {
-        var saldo = consultaSaldoUc.getSaldo(transferenciaDto.clienteSolicitante(), transferenciaDto.contaOrigem());
+    public ResponseTransferenciaDto realizarTransferencia(SolicitaTransferenciaDto transferenciaDto) {
+        var nomeCliente = clienteService.buscaDadosCliente(transferenciaDto.clienteSolicitante()).nome();
+        var dadosContaOrigem = contaService.buscaConta(transferenciaDto.contaOrigem());
 
+        try {
+            validadorConta.contaAtiva(dadosContaOrigem.isContaAtiva());
+            validadorConta.validaLimiteDiario(dadosContaOrigem.getLimiteDiario(), transferenciaDto.valor());
+            return transferir(dadosContaOrigem, transferenciaDto.contaDestino(), transferenciaDto.valor());
 
-        if (transferenciaDto.valor().compareTo(saldo.getSaldo()) > 1) {
-            log.info("Saldo Insuficiente");
+        } catch (ContaInativaException e) {
+            return this.setTransferenciaNaoRealizada(e.getMessage(), StatusEnum.ERRO);
+        } catch (LimiteDiarioException e) {
+            return this.setTransferenciaNaoRealizada(e.getMessage(), StatusEnum.ERRO);
+        }
+    }
+
+    private ResponseTransferenciaDto transferir(Conta contaOrigem, Long contaDestino, BigDecimal deposito) {
+        if (contaOrigem.getSaldo().compareTo(deposito) < 0) {
+            return this.setTransferenciaNaoRealizada("TRANFERENCIA NÂO REALIZADA SALDO INSUFICIENTE", StatusEnum.SALDO_INSUFICIENTE);
+        }
+        try {
+
+            contaService.retirarSaldo(contaOrigem.getSaldo().subtract(deposito), contaOrigem.getContaId());
+            contaService.depositar(deposito, contaDestino);
+        } catch (Exception ex) {
+            return this.setTransferenciaNaoRealizada(ex.getMessage(), StatusEnum.ERRO);
         }
 
-        this.isContaAtiva();
-        this.validaLimiteDiario();
-        this.isSaldoSuficiente();
-        this.salvarTransferencia();
+        notificarBacen();
+        return setTransferenciaNaoRealizada("TRANSFERENCIA REALIZADA COM SUCESSO", StatusEnum.REALIZADA);
+    }
 
-        this.notificarBacen();
-
+    private void validaSaldoSuficiente() {
     }
 
 
     @Override
     public RetonoBacenDto notificarBacen() {
-        log.info("NOTIFICANDO BACEN");
         return null;
     }
 
-    private void identendificarCliente(Long id) {
-        log.info("Indentificando Cliente ...{}", id);
+    private ResponseTransferenciaDto setTransferenciaNaoRealizada(String mensagem, StatusEnum status) {
+        return new ResponseTransferenciaDto(
+                LocalDateTime.now(),
+                status,
+                mensagem
+
+        );
     }
-
-    private void validaLimiteDiario() {
-        log.info("ValidandoLimite ...");
-    }
-
-    private Boolean isSaldoSuficiente() {
-        log.info("Verificando Saldo Sufiente ...");
-        return true;
-    }
-
-    private Boolean isContaAtiva() {
-        log.info("Verificando Conta Ativa ...");
-        return true;
-    }
-
-    private void salvarTransferencia() {
-        log.info("Salvando na base de dados ...");
-
-    }
-
 
 }

@@ -1,8 +1,8 @@
 package com.paulodev.apisaldotransferencia.adapters.controllers;
 
 import com.paulodev.apisaldotransferencia.dto.SaldoDto;
+import com.paulodev.apisaldotransferencia.dto.transferencia.ResponseTransferenciaDto;
 import com.paulodev.apisaldotransferencia.dto.transferencia.SolicitaTransferenciaDto;
-import com.paulodev.apisaldotransferencia.dto.transferencia.TransferenciarealizadaDto;
 import com.paulodev.apisaldotransferencia.usecases.Transferencia.TransferenciaUseCase;
 import com.paulodev.apisaldotransferencia.usecases.saldo.impl.ConsultaSaldoUcImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,19 +23,15 @@ public class OperacoesController {
     }
 
     @GetMapping("/consulta-saldo/{idClient}/{idConta}")
-    public ResponseEntity<SaldoDto> realizarTransferencia(@PathVariable("idClient") Long cliente,
-                                                          @PathVariable("idConta") Long contaId) {
+    public ResponseEntity<SaldoDto> realizarTransferencia(@PathVariable("idClient") Long cliente, @PathVariable("idConta") Long contaId) {
         return ResponseEntity.ok(consultaSaldoUsecase.getSaldo(cliente, contaId));
-
     }
 
     @PostMapping("/transferencia")
-    public ResponseEntity<TransferenciarealizadaDto> transferir(@RequestBody SolicitaTransferenciaDto soclicitacao) {
-        transferencia.realizarTransferencia(soclicitacao);
-
-
-        return ResponseEntity.ok(null);
+    public ResponseEntity<ResponseTransferenciaDto> transferir(@RequestBody SolicitaTransferenciaDto soclicitacaoTransferencia) {
+        return ResponseEntity.ok(transferencia.realizarTransferencia(soclicitacaoTransferencia));
     }
+
 
     @GetMapping("/health")
     public ResponseEntity<String> health() {
