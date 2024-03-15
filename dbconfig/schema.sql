@@ -3,9 +3,10 @@ CREATE TABLE IF NOT EXISTS CONTAS (
     conta_id bigint PRIMARY KEY,
     cliente_id bigint not null,
     limite_diario numeric(1000,2),
-    saldo  numeric(1000,2)
+    saldo  numeric(1000,2),
+   ativa BOOLEAN NOT NULL
 );
--- CREATE INDEX IF NOT EXISTS contas ON CONTAS (conta_id, cliente_id);
+ CREATE INDEX IF NOT EXISTS contas ON CONTAS (conta_id, cliente_id);
 
 
 CREATE TABLE IF NOT EXISTS TRANSACOES (
@@ -19,23 +20,20 @@ CREATE TABLE IF NOT EXISTS TRANSACOES (
     data_hora TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS transacao ON TRANSACOES (conta_id, cliente_id, id_transacao);
---
---
---
 
-INSERT INTO CONTAS (conta_id, cliente_id , limite_diario, saldo)
-       VALUES (100, 10,1000.00 , 2000.00),
-              (200, 11,1000.00 , 2000.00),
-              (300, 12,1000.00 , 2000.00),
-              (400, 13,1000.00 , 2100.00),
-              (500, 14,1000.00 , 3000.00),
-              (600, 15,1000.00 , 1200.00),
-              (700, 16,1000.00 , 4000.00),
-              (800, 17,1000.00 , 3000.00),
-              (900, 18,1000.00 , 3000.00),
-              (1001,19,1000.00 , 3000.00),
-              (850, 20,1000.00 , 3000.00);
+
+    INSERT INTO CONTAS (conta_id, cliente_id , limite_diario, saldo, ativa)
+           VALUES (100, 10,1000.00 , 2000.00, TRUE),
+                  (200, 11,1000.00 , 2000.00,TRUE),
+                  (300, 12,1000.00 , 2000.00,TRUE),
+                  (400, 13,1000.00 , 2100.00,FALSE),
+                  (500, 14,1000.00 , 3000.00,FALSE),
+                  (600, 15,1000.00 , 1200.00,TRUE),
+                  (700, 16,1000.00 , 4000.00,TRUE),
+                  (800, 17,1000.00 , 3000.00,FALSE),
+                  (900, 18,1000.00 , 3000.00,TRUE),
+                  (1001,19,1000.00 , 3000.00,TRUE),
+                  (850, 20,1000.00 , 3000.00,TRUE);
          
             --   (2, 2, 0, 800 * 100),
             --   (3, 3, 0, 10000 * 100),

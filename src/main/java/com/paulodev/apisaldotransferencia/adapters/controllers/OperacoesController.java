@@ -1,7 +1,10 @@
 package com.paulodev.apisaldotransferencia.adapters.controllers;
 
 import com.paulodev.apisaldotransferencia.dto.SaldoDto;
-import com.paulodev.apisaldotransferencia.usecases.saldo.impl.ConsultaSaldoUsecaseImpl;
+import com.paulodev.apisaldotransferencia.dto.transferencia.SolicitaTransferenciaDto;
+import com.paulodev.apisaldotransferencia.dto.transferencia.TransferenciarealizadaDto;
+import com.paulodev.apisaldotransferencia.usecases.Transferencia.TransferenciaUseCase;
+import com.paulodev.apisaldotransferencia.usecases.saldo.impl.ConsultaSaldoUcImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,18 +13,28 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/operacoes")
 public class OperacoesController {
 
-    private final ConsultaSaldoUsecaseImpl consultaSaldoUsecase;
+    private final ConsultaSaldoUcImpl consultaSaldoUsecase;
+    private final TransferenciaUseCase transferencia;
 
     @Autowired
-    public OperacoesController(ConsultaSaldoUsecaseImpl consultaSaldoUsecase) {
+    public OperacoesController(ConsultaSaldoUcImpl consultaSaldoUsecase, TransferenciaUseCase transferencia) {
         this.consultaSaldoUsecase = consultaSaldoUsecase;
+        this.transferencia = transferencia;
     }
 
     @GetMapping("/consulta-saldo/{idClient}/{idConta}")
     public ResponseEntity<SaldoDto> realizarTransferencia(@PathVariable("idClient") Long cliente,
-                                                          @PathVariable("idConta") Long conta) {
-        return ResponseEntity.ok(consultaSaldoUsecase.getSaldo(cliente, conta));
+                                                          @PathVariable("idConta") Long contaId) {
+        return ResponseEntity.ok(consultaSaldoUsecase.getSaldo(cliente, contaId));
 
+    }
+
+    @PostMapping("/transferencia")
+    public ResponseEntity<TransferenciarealizadaDto> transferir(@RequestBody SolicitaTransferenciaDto soclicitacao) {
+        transferencia.realizarTransferencia(soclicitacao);
+
+
+        return ResponseEntity.ok(null);
     }
 
     @GetMapping("/health")

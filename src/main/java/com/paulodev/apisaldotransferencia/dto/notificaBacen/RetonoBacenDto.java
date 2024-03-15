@@ -1,4 +1,4 @@
-package com.paulodev.apisaldotransferencia.dto;
+package com.paulodev.apisaldotransferencia.dto.notificaBacen;
 
 
 import java.util.Date;

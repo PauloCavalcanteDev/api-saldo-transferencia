@@ -2,15 +2,16 @@ package com.paulodev.apisaldotransferencia.adapters.databases.entities;
 
 import com.paulodev.apisaldotransferencia.enums.StatusTransacao;
 import com.paulodev.apisaldotransferencia.enums.TipoTransacao;
-import jakarta.persistence.*;
-import lombok.Getter;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
 
 @Table(name = "TRANSACOES")
-@Getter
 @Setter
 @NoArgsConstructor
 @Entity

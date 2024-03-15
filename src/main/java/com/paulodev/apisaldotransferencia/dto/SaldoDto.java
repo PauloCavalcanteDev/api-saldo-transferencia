@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 @Data
 @Builder
 public class SaldoDto {
-    private String cliente;
+    private String nomeCliente;
     private Long conta;
     private BigDecimal saldo;
     private BigDecimal limiteDiario;

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(name = "buscarDadosCliente", url = "http://localhost:8090")
-public interface DadosClienteClient {
+public interface ConsultaClientes{
     @GetMapping("/clientes/{id}")
     public ResponseEntity<ClienteDto> getClientes(@PathVariable("id")  Long id);
 
