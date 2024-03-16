@@ -1,0 +1,25 @@
+{
+    "request": {
+        "urlPathTemplate": "/consulta-dados-clientes/v1/clientes/{id_cliente}",
+        "method": "GET",
+        "pathParameters": {
+            "id_cliente": {
+                "equalTo": "10"
+            }
+        }
+    },
+    "response": {
+        "status": 200,
+        "jsonBody": {
+            "data": {
+                "cliente": {
+                    "id_cliente": "10",
+                    "nome": "Iori Yagami"
+                }
+            }
+        },
+        "headers": {
+            "Content-Type": "application/json"
+        }
+    }
+}
