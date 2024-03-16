@@ -2,7 +2,7 @@ package com.paulodev.apisaldotransferencia.adapters.controllers;
 
 import com.paulodev.apisaldotransferencia.dto.transferencia.ResponseTransferenciaDto;
 import com.paulodev.apisaldotransferencia.dto.transferencia.SolicitaTransferenciaDto;
-import com.paulodev.apisaldotransferencia.exception.ContaInvalidaExption;
+import com.paulodev.apisaldotransferencia.exception.DadosInseridoInvalidos;
 import com.paulodev.apisaldotransferencia.usecases.Transferencia.TransferenciaUseCase;
 import com.paulodev.apisaldotransferencia.usecases.saldo.impl.ConsultaSaldoUcImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class OperacoesController {
     public ResponseEntity realizarTransferencia(@PathVariable("idClient") Long cliente, @PathVariable("idConta") Long contaId) {
         try {
             return ResponseEntity.ok(consultaSaldoUsecase.getSaldo(cliente, contaId));
-        } catch (ContaInvalidaExption ex) {
+        } catch (DadosInseridoInvalidos ex) {
             return ResponseEntity.notFound().build();
 
         }

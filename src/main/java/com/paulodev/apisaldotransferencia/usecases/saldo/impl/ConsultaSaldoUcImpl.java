@@ -1,13 +1,15 @@
 package com.paulodev.apisaldotransferencia.usecases.saldo.impl;
 
 import com.paulodev.apisaldotransferencia.dto.SaldoDto;
-import com.paulodev.apisaldotransferencia.exception.ContaInvalidaExption;
+import com.paulodev.apisaldotransferencia.exception.DadosInseridoInvalidos;
 import com.paulodev.apisaldotransferencia.ports.api.DadosClienteService;
 import com.paulodev.apisaldotransferencia.ports.conta.ContaService;
 import com.paulodev.apisaldotransferencia.usecases.saldo.ConsultaSaldoUseCase;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import static java.text.MessageFormat.format;
 
 @Component
 @Slf4j
@@ -25,18 +27,17 @@ public class ConsultaSaldoUcImpl implements ConsultaSaldoUseCase {
     }
 
     @Override
-    public SaldoDto getSaldo(Long clienteId, Long contaId) throws ContaInvalidaExption {
+    public SaldoDto getSaldo(Long clienteId, Long contaId) throws DadosInseridoInvalidos {
         try {
+            var conta = contaService.consultaConta(contaId, clienteId).get();
+            var cliente = dadosClienteService.buscaDadosCliente(clienteId).nome();
 
-            return contaService.consultaSaldoCliente(
-                    contaService.consultaConta(contaId, clienteId).get(),
-                    dadosClienteService.buscaDadosCliente(clienteId).nome()
-            );
-        } catch (Exception ignored) {
-            throw new ContaInvalidaExption("ERRO");
+            return contaService.consultaSaldoCliente(conta, cliente);
+
+        } catch (Exception ex) {
+            throw new DadosInseridoInvalidos(format("CONTA ou CLIENTE INVALIDO -. {} ", ex.getMessage()));
         }
 
     }
-
 
 }
