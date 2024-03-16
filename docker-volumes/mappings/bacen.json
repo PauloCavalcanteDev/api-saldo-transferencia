@@ -7,13 +7,11 @@
     "status": 200,
     "jsonBody": {
       "data": {
-        "id_transacao": "10",
-        "retorno": "Iori Yagami",
-        "data": "{{now format='yyyy-MM-dd HH:mm:ssZ'}}"
+        "transacao": "{{randomValue length=10 type='NUMERIC'}}",
+        "retorno": "TRANSACAO INCLUIDA COM SUCESSO"
       },
       "headers": {
-        "Content-Type": "application.json",
-        "Cache-Control": "no-cache"
+        "Content-Type": "application/json"
       }
     }
   }

@@ -13,7 +13,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./dbconfig/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+      - ./docker-volumes/dbconfig/schema.sql:/docker-entrypoint-initdb.d/schema.sql
     networks:
       - local
 
@@ -22,20 +22,10 @@ services:
     ports:
       - 6379:6379
     volumes:
-      - ./redis_data:/data
+      - ./docker-volumes/redis_data:/data
     networks:
       - local
 
-  wiremock:
-    image: "wiremock/wiremock:latest"
-    container_name: api-fake
-    ports:
-      - 8081:8080
-    volumes:
-      - ./extensions:/var/wiremock/extensions
-      - ./__files:/home/wiremock/__files
-      - ./mappings:/home/wiremock/mappings
-    entrypoint: [ "/docker-entrypoint.sh", "--global-response-templating", "--disable-gzip", "--verbose" ]
 
   json_server:
     image: clue/json-server
@@ -43,9 +33,19 @@ services:
     ports:
       - 8090:80
     volumes:
-      - ./fake-api/db.json:/data/db.json
+      - ./docker-volumes/fake-api/db.json:/data/db.json
     networks:
       - local
+#  wiremock:
+#    image: "wiremock/wiremock:latest"
+#    container_name: api-fake
+#    ports:
+#      - 8081:8080
+#    volumes:
+#      - ./docker-volumes/extensions:/var/wiremock/extensions
+#      - ./docker-volumes/__files:/home/wiremock/__files
+#      - ./docker-volumes/mappings:/home/wiremock/mappings
+#    entrypoint: [ "/docker-entrypoint.sh", "--global-response-templating", "--disable-gzip", "--verbose" ]
 
 networks:
   local:

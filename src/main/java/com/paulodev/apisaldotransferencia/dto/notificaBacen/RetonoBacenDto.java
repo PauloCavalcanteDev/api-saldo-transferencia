@@ -1,7 +1,10 @@
 package com.paulodev.apisaldotransferencia.dto.notificaBacen;
 
 
-import java.util.Date;
+import com.paulodev.apisaldotransferencia.enums.TipoTransacao;
 
-public record RetonoBacenDto(Long idTransacao, String msgRetorno, Date data) {
+public record RetonoBacenDto(
+        Long numeroTransacao,
+        TipoTransacao tipoTransacao,
+        Long idCliente) {
 }

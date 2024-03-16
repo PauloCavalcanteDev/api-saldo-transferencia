@@ -1,6 +1,7 @@
 package com.paulodev.apisaldotransferencia.usecases.saldo.impl;
 
 import com.paulodev.apisaldotransferencia.dto.SaldoDto;
+import com.paulodev.apisaldotransferencia.exception.ContaInvalidaExption;
 import com.paulodev.apisaldotransferencia.ports.api.DadosClienteService;
 import com.paulodev.apisaldotransferencia.ports.conta.ContaService;
 import com.paulodev.apisaldotransferencia.usecases.saldo.ConsultaSaldoUseCase;
@@ -24,12 +25,16 @@ public class ConsultaSaldoUcImpl implements ConsultaSaldoUseCase {
     }
 
     @Override
-    public SaldoDto getSaldo(Long clienteId, Long contaId) {
+    public SaldoDto getSaldo(Long clienteId, Long contaId) throws ContaInvalidaExption {
+        try {
 
-        return contaService.consultaSaldoCliente(
-                contaService.consultaConta(contaId, clienteId).get(),
-                dadosClienteService.buscaDadosCliente(clienteId).nome()
-        );
+            return contaService.consultaSaldoCliente(
+                    contaService.consultaConta(contaId, clienteId).get(),
+                    dadosClienteService.buscaDadosCliente(clienteId).nome()
+            );
+        } catch (Exception ignored) {
+            throw new ContaInvalidaExption("ERRO");
+        }
 
     }
 

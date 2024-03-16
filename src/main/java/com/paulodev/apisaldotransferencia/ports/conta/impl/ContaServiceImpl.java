@@ -28,6 +28,7 @@ public class ContaServiceImpl implements ContaService {
     @Override
     public Optional<Conta> consultaConta(Long contaId, Long clientId) {
         return repository.findByIdContaAndClientId(contaId, clientId);
+
     }
 
     @Override

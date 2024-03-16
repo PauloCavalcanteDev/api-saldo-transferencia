@@ -26,3 +26,10 @@ spring:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/itaudb}
     username: ${SPRING_DATASOURCE_USERNAME:userdb}
     password: ${SPRING_DATASOURCE_PASSWORD:pass}
+
+  redis:
+    host: ${HOST:localhost}
+    port: ${PORT:6379}
+    password: ${PASSWORD:password}
+    cache:
+      type: redis

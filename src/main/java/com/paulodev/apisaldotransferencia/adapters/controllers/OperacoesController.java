@@ -1,8 +1,8 @@
 package com.paulodev.apisaldotransferencia.adapters.controllers;
 
-import com.paulodev.apisaldotransferencia.dto.SaldoDto;
 import com.paulodev.apisaldotransferencia.dto.transferencia.ResponseTransferenciaDto;
 import com.paulodev.apisaldotransferencia.dto.transferencia.SolicitaTransferenciaDto;
+import com.paulodev.apisaldotransferencia.exception.ContaInvalidaExption;
 import com.paulodev.apisaldotransferencia.usecases.Transferencia.TransferenciaUseCase;
 import com.paulodev.apisaldotransferencia.usecases.saldo.impl.ConsultaSaldoUcImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,22 +14,33 @@ import org.springframework.web.bind.annotation.*;
 public class OperacoesController {
 
     private final ConsultaSaldoUcImpl consultaSaldoUsecase;
-    private final TransferenciaUseCase transferencia;
+    private final TransferenciaUseCase transferenciaUseCase;
+
 
     @Autowired
-    public OperacoesController(ConsultaSaldoUcImpl consultaSaldoUsecase, TransferenciaUseCase transferencia) {
+    public OperacoesController(ConsultaSaldoUcImpl consultaSaldoUsecase, TransferenciaUseCase transferenciaUseCase) {
         this.consultaSaldoUsecase = consultaSaldoUsecase;
-        this.transferencia = transferencia;
+        this.transferenciaUseCase = transferenciaUseCase;
     }
 
     @GetMapping("/consulta-saldo/{idClient}/{idConta}")
-    public ResponseEntity<SaldoDto> realizarTransferencia(@PathVariable("idClient") Long cliente, @PathVariable("idConta") Long contaId) {
-        return ResponseEntity.ok(consultaSaldoUsecase.getSaldo(cliente, contaId));
+    public ResponseEntity realizarTransferencia(@PathVariable("idClient") Long cliente, @PathVariable("idConta") Long contaId) {
+        try {
+            return ResponseEntity.ok(consultaSaldoUsecase.getSaldo(cliente, contaId));
+        } catch (ContaInvalidaExption ex) {
+            return ResponseEntity.notFound().build();
+
+        }
     }
 
     @PostMapping("/transferencia")
     public ResponseEntity<ResponseTransferenciaDto> transferir(@RequestBody SolicitaTransferenciaDto soclicitacaoTransferencia) {
-        return ResponseEntity.ok(transferencia.realizarTransferencia(soclicitacaoTransferencia));
+        try {
+
+            return ResponseEntity.ok(transferenciaUseCase.realizarTransferencia(soclicitacaoTransferencia));
+        } catch (Exception ex) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 

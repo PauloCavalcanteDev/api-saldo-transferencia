@@ -1,49 +1,44 @@
 {
-  "Clientes": [
+  "Cliente": [
     {
       "id": 10,
       "cliente_id": 10,
       "nome": "Iori Yagami"
     },
     {
-      "id": 11,
-      "cliente_id": 11,
+      "id": 20,
+      "cliente_id": 20,
       "nome": "Kyo Kusanagy"
     },
     {
-      "id": 13,
-      "cliente_id": 13,
+      "id": 30,
+      "cliente_id": 30,
       "nome": "Terry Bogard"
     },
     {
-      "id": 12,
-      "cliente_id": 12,
+      "id": 40,
+      "cliente_id": 40,
       "nome": "Goro Daimon"
     },
     {
-      "id": 14,
-      "cliente_id": 14,
+      "id": 50,
+      "cliente_id": 50,
       "nome": "Yashiro N."
     },
     {
-      "id": 15,
-      "cliente_id": 15,
+      "id": 60,
+      "cliente_id": 60,
       "nome": "Athena M."
     },
     {
-      "id": 16,
-      "cliente_id": 16,
+      "id": 70,
+      "cliente_id": 70,
       "nome": "May Chizuru"
     }
   ],
   
     "Bacen": [
-      {
-        "id": 100,
-        "numero_transacao": 10,
-        "tipo_transacao": "Transferencia",
-        "id_cliente":10
-      }
+
     ]
   
 }
