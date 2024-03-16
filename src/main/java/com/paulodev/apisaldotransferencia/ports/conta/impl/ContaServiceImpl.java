@@ -53,6 +53,11 @@ public class ContaServiceImpl implements ContaService {
         repository.depositar(valorDeposito, idContaDestino);
     }
 
+    @Override
+    public BigDecimal consultaLimiteDiario(Long contaId, Long clientId) {
+        return repository.findLimiteDiario(contaId, clientId);
+    }
+
 
     private SaldoDto toDto(Conta contaRetorno, String name) {
         return SaldoDto.builder()

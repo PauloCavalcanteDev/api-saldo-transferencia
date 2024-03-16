@@ -41,15 +41,16 @@ public class TransferenciaUcImpl implements TransferenciaUseCase {
     }
 
     @Override
-    public ResponseTransferenciaDto realizarTransferencia(SolicitaTransferenciaDto transferenciaDto) throws ErroBuscarClienteException {
-        var dadosContaOrigem = this.contaService.buscaConta(transferenciaDto.contaOrigem());
-        var nomeCliente = this.clienteService.buscaDadosCliente(transferenciaDto.clienteSolicitante()).nome();
+    public ResponseTransferenciaDto realizarTransferencia(SolicitaTransferenciaDto dto) throws ErroBuscarClienteException {
+        var dadosContaOrigem = this.contaService.buscaConta(dto.contaOrigem());
+        var nomeCliente = this.clienteService.buscaDadosCliente(dto.clienteSolicitante()).nome();
+        var limite = contaService.consultaLimiteDiario(dto.contaOrigem(), dto.clienteSolicitante());
 
         try {
             this.validadorConta.contaAtiva(dadosContaOrigem.isContaAtiva());
-            this.validadorConta.validaLimiteDiario(dadosContaOrigem.getLimiteDiario(), transferenciaDto.valor());
+            this.validadorConta.validaLimiteDiario(limite, dto.valor());
             this.integracaoBacenService.notificaBacen(this.getNotificadorBacen());
-            return this.transferir(dadosContaOrigem, transferenciaDto.contaDestino(), transferenciaDto.valor());
+            return this.transferir(dadosContaOrigem, dto.contaDestino(), dto.valor());
 
         } catch (ContaInativaException e) {
             return this.setTransferenciaNaoRealizada(e.getMessage(), StatusEnum.ERRO);

@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface ContaService {
 
     Optional<Conta> consultaConta(Long contaId, Long clientId) ;
-
+    
     SaldoDto consultaSaldoCliente(Conta conta, String nome);
 
     Conta buscaConta(Long contaId);
@@ -18,5 +18,6 @@ public interface ContaService {
 
     void depositar(BigDecimal valor, Long contaId);
 
+    BigDecimal consultaLimiteDiario(Long contaId, Long clientId) ;
 
 }

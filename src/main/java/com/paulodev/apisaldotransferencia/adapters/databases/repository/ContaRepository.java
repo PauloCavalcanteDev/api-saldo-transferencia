@@ -2,6 +2,7 @@ package com.paulodev.apisaldotransferencia.adapters.databases.repository;
 
 import com.paulodev.apisaldotransferencia.adapters.databases.entities.Conta;
 import jakarta.transaction.Transactional;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -28,4 +29,9 @@ public interface ContaRepository extends JpaRepository<Conta, Long> {
     @Query(value = "UPDATE Conta SET saldo=saldo + :deposito where contaId=:contaId")
     @Modifying(clearAutomatically = true)
     void depositar(BigDecimal deposito, Long contaId);
+
+    @Transactional
+    @Query(value = "SELECT limiteDiario from Conta where contaId=:contaId and clientId=:clientId")
+    @Cacheable("limiteDiario")
+    BigDecimal findLimiteDiario(Long contaId, Long clientId);
 }
