@@ -27,19 +27,20 @@ public class ContaServiceImpl implements ContaService {
 
     @Override
     public Optional<Conta> consultaConta(Long contaId, Long clientId) {
+        log.info("Consultando conta: {}", contaId);
         return repository.findByIdContaAndClientId(contaId, clientId);
 
     }
 
     @Override
     public SaldoDto consultaSaldoCliente(Conta conta, String nome) {
-
+        log.info("Retornando Saldo");
         return converter.toDto(conta, nome);
     }
 
     @Override
     public Conta buscaConta(Long contaId) {
-
+        log.info("Buscando dados Conta : {}", contaId);
         return repository.findById(contaId).get();
     }
 

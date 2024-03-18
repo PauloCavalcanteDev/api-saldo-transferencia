@@ -28,6 +28,7 @@ public class ConsultaSaldoUcImpl implements ConsultaSaldoUseCase {
 
     @Override
     public SaldoDto getSaldo(Long clienteId, Long contaId) throws DadosInseridoInvalidos {
+        log.info("inicio consulta saldo cliente: {} - conta: {}", clienteId, contaId);
         try {
             var conta = contaService.consultaConta(contaId, clienteId).get();
             var cliente = dadosClienteService.buscaDadosCliente(clienteId).nome();
@@ -35,6 +36,7 @@ public class ConsultaSaldoUcImpl implements ConsultaSaldoUseCase {
             return contaService.consultaSaldoCliente(conta, cliente);
 
         } catch (Exception ex) {
+            log.error("Erro ao consultar Saldo -> {}", ex.getMessage());
             throw new DadosInseridoInvalidos(format("CONTA ou CLIENTE INVALIDO -. {} ", ex.getMessage()));
         }
 

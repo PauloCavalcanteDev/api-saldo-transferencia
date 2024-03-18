@@ -25,10 +25,13 @@ public class TransferenciaServiceImpl implements TransferenciaService {
         return repository.getValorDiario(contaId);
     }
 
-    public void validaLimiteDiario(Long contaId, BigDecimal limiteDiario, BigDecimal valorTransferencia) throws LimiteDiarioException {
+    public void validaLimiteDiario(Long contaId, BigDecimal limiteDiario, BigDecimal valorTransferencia)
+            throws LimiteDiarioException {
+        log.info("Verificando Gastos Diarios");
         var gastoDiario = this.verificaGastoDiario(contaId);
 
         if (Objects.nonNull(gastoDiario) && (limiteDiario).compareTo(gastoDiario.add(valorTransferencia)) < 0) {
+            log.error("LIMITE DIARIO EXCEDIDO");
             throw new LimiteDiarioException("LIMITE DIARIO EXCEDIDO");
         }
 
