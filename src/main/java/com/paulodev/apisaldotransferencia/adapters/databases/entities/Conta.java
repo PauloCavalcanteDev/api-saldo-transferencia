@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Table(name = "CONTAS")
@@ -15,7 +16,7 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 @Entity
-public class Conta {
+public class Conta implements Serializable {
 
     @Id
     @Column(name = "conta_id", nullable = false)

@@ -21,12 +21,21 @@ comunicação com as bases de dados ou outras API”s.
 
 # Para Rodar a aplicação:
 
+<h4>Pré requisitos:</h4>
+ - Docker
+ - Java 17
+ - maven 3.8 ou superior
 
+Antes de iniciar é preciso subir a infra com o comando :
 ```
 docker-compose up -d
 ```
+<h4>Após:</h4>
 
-
+```
+mvn clean package
+java -jar target/api-saldo-transferencia-0.0.1-SNAPSHOT.jar
+```
 
 # Endpoints:
 

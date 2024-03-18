@@ -1,7 +1,6 @@
-version: '3.5'
+version: '3.6'
 
 services:
-
   postgres:
     image: postgres:latest
     restart: on-failure
@@ -36,16 +35,6 @@ services:
       - ./docker-volumes/fake-api/db.json:/data/db.json
     networks:
       - local
-#  wiremock:
-#    image: "wiremock/wiremock:latest"
-#    container_name: api-fake
-#    ports:
-#      - 8081:8080
-#    volumes:
-#      - ./docker-volumes/extensions:/var/wiremock/extensions
-#      - ./docker-volumes/__files:/home/wiremock/__files
-#      - ./docker-volumes/mappings:/home/wiremock/mappings
-#    entrypoint: [ "/docker-entrypoint.sh", "--global-response-templating", "--disable-gzip", "--verbose" ]
 
 networks:
   local:

@@ -7,6 +7,7 @@ import com.paulodev.apisaldotransferencia.dto.SaldoDto;
 import com.paulodev.apisaldotransferencia.ports.conta.ContaService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -26,6 +27,7 @@ public class ContaServiceImpl implements ContaService {
     }
 
     @Override
+    @Cacheable(value = "conta", key = "#contaId")
     public Optional<Conta> consultaConta(Long contaId, Long clientId) {
         log.info("Consultando conta: {}", contaId);
         return repository.findByIdContaAndClientId(contaId, clientId);

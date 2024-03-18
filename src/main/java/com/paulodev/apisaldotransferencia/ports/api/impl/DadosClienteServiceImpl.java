@@ -6,6 +6,7 @@ import com.paulodev.apisaldotransferencia.exception.ErroTransferenciaException;
 import com.paulodev.apisaldotransferencia.ports.api.DadosClienteService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import static java.lang.String.format;
@@ -22,7 +23,7 @@ public class DadosClienteServiceImpl implements DadosClienteService {
     }
 
     @Override
-//    @Cacheable("cliente")
+    @Cacheable(value = "cliente", key = "#clienteId")
     public ClienteDto buscaDadosCliente(Long clienteId) throws ErroTransferenciaException {
         log.info("Identificando cliente: {}", clienteId);
         try {
