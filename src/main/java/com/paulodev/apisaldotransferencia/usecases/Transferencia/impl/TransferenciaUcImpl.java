@@ -1,7 +1,7 @@
 package com.paulodev.apisaldotransferencia.usecases.Transferencia.impl;
 
 import com.paulodev.apisaldotransferencia.adapters.databases.entities.Conta;
-import com.paulodev.apisaldotransferencia.adapters.validador.ValidadorConta;
+import com.paulodev.apisaldotransferencia.conveters.TransferenciaConverter;
 import com.paulodev.apisaldotransferencia.dto.notificaBacen.NotificabacenDto;
 import com.paulodev.apisaldotransferencia.dto.transferencia.ResponseTransferenciaDto;
 import com.paulodev.apisaldotransferencia.dto.transferencia.SolicitaTransferenciaDto;
@@ -14,6 +14,7 @@ import com.paulodev.apisaldotransferencia.exception.LimiteDiarioException;
 import com.paulodev.apisaldotransferencia.ports.api.DadosClienteService;
 import com.paulodev.apisaldotransferencia.ports.api.impl.IntegracaoBacenService;
 import com.paulodev.apisaldotransferencia.ports.conta.ContaService;
+import com.paulodev.apisaldotransferencia.ports.transferencia.impl.TransferenciaServiceImpl;
 import com.paulodev.apisaldotransferencia.usecases.Transferencia.TransferenciaUseCase;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,34 +29,49 @@ public class TransferenciaUcImpl implements TransferenciaUseCase {
 
     private final DadosClienteService clienteService;
     private final ContaService contaService;
-    private final ValidadorConta validadorConta;
+    private final TransferenciaServiceImpl transferenciaService;
     private final IntegracaoBacenService integracaoBacenService;
+    private final TransferenciaConverter transferenciaConverter;
 
 
     @Autowired
-    public TransferenciaUcImpl(DadosClienteService clienteService, ContaService contaService, ValidadorConta validadorConta, IntegracaoBacenService integracaoBacenService) {
+    public TransferenciaUcImpl(DadosClienteService clienteService,
+                               ContaService contaService,
+                               TransferenciaServiceImpl transferenciaService,
+                               IntegracaoBacenService integracaoBacenService, TransferenciaConverter transferenciaConverter) {
         this.clienteService = clienteService;
         this.contaService = contaService;
-        this.validadorConta = validadorConta;
+        this.transferenciaService = transferenciaService;
+
         this.integracaoBacenService = integracaoBacenService;
+        this.transferenciaConverter = transferenciaConverter;
     }
 
     @Override
     public ResponseTransferenciaDto realizarTransferencia(SolicitaTransferenciaDto dto) throws ErroBuscarClienteException {
         var dadosContaOrigem = this.contaService.buscaConta(dto.contaOrigem());
         var nomeCliente = this.clienteService.buscaDadosCliente(dto.clienteSolicitante()).nome();
-        var limite = contaService.consultaLimiteDiario(dto.contaOrigem(), dto.clienteSolicitante());
 
         try {
-            this.validadorConta.contaAtiva(dadosContaOrigem.isContaAtiva());
-            this.validadorConta.validaLimiteDiario(limite, dto.valor());
+            this.isContaAtiva(dadosContaOrigem.isContaAtiva());
+
+            this.transferenciaService.validaLimiteDiario(
+                    dto.contaOrigem(),
+                    dadosContaOrigem.getLimiteDiario(),
+                    dto.valor()
+            );
+
+            var transferenciaRealizada = this.transferir(dadosContaOrigem, dto.contaDestino(), dto.valor());
+            transferenciaService.saveTransferencia(transferenciaConverter.dtoToTransferencia(dto));
             this.integracaoBacenService.notificaBacen(this.getNotificadorBacen());
-            return this.transferir(dadosContaOrigem, dto.contaDestino(), dto.valor());
+
+            return transferenciaRealizada;
+
 
         } catch (ContaInativaException e) {
-            return this.setTransferenciaNaoRealizada(e.getMessage(), StatusEnum.ERRO);
+            return this.setTransferencia(e.getMessage(), StatusEnum.ERRO);
         } catch (LimiteDiarioException e) {
-            return this.setTransferenciaNaoRealizada(e.getMessage(), StatusEnum.ERRO);
+            return this.setTransferencia(e.getMessage(), StatusEnum.ERRO);
         }
     }
 
@@ -72,21 +88,28 @@ public class TransferenciaUcImpl implements TransferenciaUseCase {
 
     private ResponseTransferenciaDto transferir(Conta contaOrigem, Long contaDestino, BigDecimal deposito) {
         if (contaOrigem.getSaldo().compareTo(deposito) < 0) {
-            return this.setTransferenciaNaoRealizada("TRANFERENCIA NÂO REALIZADA SALDO INSUFICIENTE", StatusEnum.SALDO_INSUFICIENTE);
+            return this.setTransferencia("TRANFERENCIA NÂO REALIZADA SALDO INSUFICIENTE", StatusEnum.SALDO_INSUFICIENTE);
         }
         try {
 
             contaService.retirarSaldo(contaOrigem.getSaldo().subtract(deposito), contaOrigem.getContaId());
             contaService.depositar(deposito, contaDestino);
         } catch (Exception ex) {
-            return this.setTransferenciaNaoRealizada(ex.getMessage(), StatusEnum.ERRO);
+            return this.setTransferencia(ex.getMessage(), StatusEnum.ERRO);
         }
 
-        return setTransferenciaNaoRealizada("TRANSFERENCIA REALIZADA COM SUCESSO", StatusEnum.REALIZADA);
+        return setTransferencia("TRANSFERENCIA REALIZADA COM SUCESSO", StatusEnum.REALIZADA);
+    }
+
+    private void isContaAtiva(boolean contaAtiva) throws ContaInativaException {
+        if (!contaAtiva) {
+            throw new ContaInativaException("CONTA INATIVA");
+        }
+
     }
 
 
-    private ResponseTransferenciaDto setTransferenciaNaoRealizada(String mensagem, StatusEnum status) {
+    private ResponseTransferenciaDto setTransferencia(String mensagem, StatusEnum status) {
         return new ResponseTransferenciaDto(
                 LocalDateTime.now(),
                 status,

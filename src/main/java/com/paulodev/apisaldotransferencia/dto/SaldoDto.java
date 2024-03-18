@@ -11,5 +11,5 @@ public class SaldoDto {
     private String nomeCliente;
     private Long conta;
     private BigDecimal saldo;
-    private BigDecimal limiteDiario;
+
 }

@@ -8,19 +8,19 @@ CREATE TABLE IF NOT EXISTS CONTAS (
 );
  CREATE INDEX IF NOT EXISTS contas ON CONTAS (conta_id, cliente_id);
 
+CREATE SEQUENCE IF NOT EXISTS transferencia_seq;
 
-CREATE TABLE IF NOT EXISTS TRANSACOES (
-    id_transacao bigint  PRIMARY KEY not null,
-    conta_orig bigint ,
+CREATE TABLE IF NOT EXISTS TRANSFERENCIAS (
+    transf_id bigint DEFAULT nextval('transferencia_seq')  PRIMARY KEY not null,
+    conta_id bigint,
     conta_dstn bigint ,
-    cliente_id bigint,
-    tipo_trsc varchar(20),
     valor numeric(1000,2),
     status_bacen varchar(15),
     data_hora TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 
+CREATE INDEX IF NOT EXISTS LIMITE ON TRANSFERENCIAS (conta_id, data_hora);
 
     INSERT INTO CONTAS (conta_id, cliente_id , limite_diario, saldo, ativa)
            VALUES (100, 10,1000.00 , 2000.00, TRUE),

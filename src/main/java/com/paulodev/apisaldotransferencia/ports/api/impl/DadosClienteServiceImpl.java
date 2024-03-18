@@ -23,7 +23,7 @@ public class DadosClienteServiceImpl implements DadosClienteService {
     }
 
     @Override
-    @Cacheable("cliente")
+//    @Cacheable("cliente")
     public ClienteDto buscaDadosCliente(Long clienteId) throws ErroBuscarClienteException {
         try {
             return consultaDadosClientes.getClientes(clienteId).getBody();

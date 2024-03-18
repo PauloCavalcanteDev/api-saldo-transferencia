@@ -3,6 +3,7 @@ package com.paulodev.apisaldotransferencia.adapters.controllers;
 import com.paulodev.apisaldotransferencia.dto.transferencia.ResponseTransferenciaDto;
 import com.paulodev.apisaldotransferencia.dto.transferencia.SolicitaTransferenciaDto;
 import com.paulodev.apisaldotransferencia.exception.DadosInseridoInvalidos;
+import com.paulodev.apisaldotransferencia.exception.ErroBuscarClienteException;
 import com.paulodev.apisaldotransferencia.usecases.Transferencia.TransferenciaUseCase;
 import com.paulodev.apisaldotransferencia.usecases.saldo.impl.ConsultaSaldoUcImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,14 +39,10 @@ public class OperacoesController {
         try {
 
             return ResponseEntity.ok(transferenciaUseCase.realizarTransferencia(soclicitacaoTransferencia));
-        } catch (Exception ex) {
+        } catch (ErroBuscarClienteException ex) {
             return ResponseEntity.notFound().build();
         }
     }
 
-
-    @GetMapping("/health")
-    public ResponseEntity<String> health() {
-        return ResponseEntity.ok("APP IS RUNNING");
-    }
 }
+

@@ -32,6 +32,6 @@ public interface ContaRepository extends JpaRepository<Conta, Long> {
 
     @Transactional
     @Query(value = "SELECT limiteDiario from Conta where contaId=:contaId and clientId=:clientId")
-    @Cacheable("limiteDiario")
+//    @Cacheable("limiteDiario")
     BigDecimal findLimiteDiario(Long contaId, Long clientId);
 }

@@ -59,14 +59,4 @@ public class ContaServiceImpl implements ContaService {
     }
 
 
-    private SaldoDto toDto(Conta contaRetorno, String name) {
-        return SaldoDto.builder()
-                .nomeCliente(name)
-                .conta(contaRetorno.getContaId())
-                .limiteDiario(contaRetorno.getLimiteDiario())
-                .saldo(contaRetorno.getSaldo())
-                .build();
-    }
-
-
 }
