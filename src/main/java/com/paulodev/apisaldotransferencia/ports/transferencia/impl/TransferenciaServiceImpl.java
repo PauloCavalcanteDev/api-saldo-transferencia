@@ -5,6 +5,8 @@ import com.paulodev.apisaldotransferencia.adapters.databases.repository.Transfer
 import com.paulodev.apisaldotransferencia.exception.LimiteDiarioException;
 import com.paulodev.apisaldotransferencia.ports.transferencia.TransferenciaService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -22,9 +24,10 @@ public class TransferenciaServiceImpl implements TransferenciaService {
 
     @Override
     public BigDecimal verificaGastoDiario(Long contaId) {
-        return repository.getValorDiario(contaId);
+        return this.getGastoDiario(contaId);
     }
 
+    @Override
     public void validaLimiteDiario(Long contaId, BigDecimal limiteDiario, BigDecimal valorTransferencia)
             throws LimiteDiarioException {
         log.info("Verificando Gastos Diarios");
@@ -37,8 +40,16 @@ public class TransferenciaServiceImpl implements TransferenciaService {
 
     }
 
+    @Override
+    @CacheEvict(value = "GastosDiarios", allEntries = true)
     public void saveTransferencia(Transferencia transferencia) {
         repository.save(transferencia);
+    }
+
+
+    @Cacheable(value = "GastosDiarios", key = "#contaId")
+    private BigDecimal getGastoDiario(Long contaId) {
+        return repository.getValorDiario(contaId);
     }
 
 

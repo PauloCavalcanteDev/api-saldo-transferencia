@@ -14,6 +14,7 @@ import com.paulodev.apisaldotransferencia.exception.LimiteDiarioException;
 import com.paulodev.apisaldotransferencia.ports.api.DadosClienteService;
 import com.paulodev.apisaldotransferencia.ports.api.impl.IntegracaoBacenService;
 import com.paulodev.apisaldotransferencia.ports.conta.ContaService;
+import com.paulodev.apisaldotransferencia.ports.transferencia.TransferenciaService;
 import com.paulodev.apisaldotransferencia.ports.transferencia.impl.TransferenciaServiceImpl;
 import com.paulodev.apisaldotransferencia.usecases.Transferencia.TransferenciaUseCase;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +30,7 @@ public class TransferenciaUcImpl implements TransferenciaUseCase {
 
     private final DadosClienteService clienteService;
     private final ContaService contaService;
-    private final TransferenciaServiceImpl transferenciaService;
+    private final TransferenciaService transferenciaService;
     private final IntegracaoBacenService integracaoBacenService;
     private final TransferenciaConverter transferenciaConverter;
 
@@ -37,7 +38,7 @@ public class TransferenciaUcImpl implements TransferenciaUseCase {
     @Autowired
     public TransferenciaUcImpl(DadosClienteService clienteService,
                                ContaService contaService,
-                               TransferenciaServiceImpl transferenciaService,
+                               TransferenciaService transferenciaService,
                                IntegracaoBacenService integracaoBacenService, TransferenciaConverter transferenciaConverter) {
         this.clienteService = clienteService;
         this.contaService = contaService;
@@ -92,7 +93,7 @@ public class TransferenciaUcImpl implements TransferenciaUseCase {
 
     private ResponseTransferenciaDto transferir(Conta contaOrigem, Long contaDestino, BigDecimal deposito) {
         log.info("Realizando Transferencia origem :{}, destino: {}, valor: {}",
-                contaOrigem,
+                contaOrigem.getContaId(),
                 contaDestino,
                 deposito);
         if (contaOrigem.getSaldo().compareTo(deposito) < 0) {
