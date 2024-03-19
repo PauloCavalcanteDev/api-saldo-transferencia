@@ -36,12 +36,12 @@ class ContaServiceImplTest {
 
     @Test
     void deveRetornarAcontaAoReceberoClientID() {
-        Conta conta = new Conta(
-                10L,
-                100L,
-                new BigDecimal(1000),
-                new BigDecimal(2000),
-                true);
+        Conta conta = new Conta();
+        conta.setClientId(100L);
+        conta.setContaId(10L);
+        conta.setSaldo(new BigDecimal(2000));
+        conta.setLimiteDiario(new BigDecimal(1000L));
+        conta.setContaAtiva(true);
 
         Mockito.when(repository.findByIdContaAndClientId(10L, 100L)).thenReturn(Optional.of(conta));
 
